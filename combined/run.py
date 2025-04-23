@@ -57,8 +57,22 @@ x = p.loadTexture('aruco_cube.png')
 p.changeVisualShape(c, -1, textureUniqueId=x)
 
 # go to the desired position
-p.setJointMotorControlArray(bodyIndex=boxId, jointIndices=jointIndices, targetPositions=[0.0, 1.5708, 0.0], controlMode=p.POSITION_CONTROL)
-for _ in range(100):
+desired_position = [0.5, 0.5, 0.0] # Пускай совпадает с координатами маркера
+
+jointPositions = p.calculateInverseKinematics(
+    boxId,
+    eefLinkIdx,
+    desired_position
+)
+print(jointPositions)
+
+p.setJointMotorControlArray(
+    bodyIndex=boxId,
+    jointIndices=jointIndices,
+    targetPositions=jointPositions[:len(jointIndices)],
+    controlMode=p.POSITION_CONTROL
+)
+for _ in range(100000):
     p.stepSimulation()
 
 # get aruco coordinates in the desired position
@@ -70,8 +84,22 @@ sd0 = np.array([(s-IMG_HALF)/IMG_HALF for s in sd0])
 sd = np.reshape(np.array(corners[0][0]),(8,1)).astype(int)
 
 # go to the starting position
-p.setJointMotorControlArray(bodyIndex=boxId, jointIndices=jointIndices, targetPositions=[0.1, 1.4708, 0.1], controlMode=p.POSITION_CONTROL)
-for _ in range(100):
+starting_position = [0.75, 0.75, 0.0]
+
+jointPositions_start = p.calculateInverseKinematics(
+    boxId,
+    eefLinkIdx,
+    starting_position
+)
+print(jointPositions_start)
+
+p.setJointMotorControlArray(
+    bodyIndex=boxId,
+    jointIndices=jointIndices,
+    targetPositions=jointPositions_start[:len(jointIndices)],
+    controlMode=p.POSITION_CONTROL
+)
+for _ in range(1000000):
     p.stepSimulation()
 
 camCount = 0
