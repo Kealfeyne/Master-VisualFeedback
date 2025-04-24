@@ -58,11 +58,13 @@ p.changeVisualShape(c, -1, textureUniqueId=x)
 
 # go to the desired position
 desired_position = [0.5, 0.5, 0.0] # Пускай совпадает с координатами маркера
+desired_orientation = p.getQuaternionFromEuler([0, 0, np.pi/3])
 
 jointPositions = p.calculateInverseKinematics(
     boxId,
     eefLinkIdx,
-    desired_position
+    desired_position,
+    desired_orientation
 )
 print(jointPositions)
 
@@ -85,11 +87,13 @@ sd = np.reshape(np.array(corners[0][0]),(8,1)).astype(int)
 
 # go to the starting position
 starting_position = [0.75, 0.75, 0.0]
+starting_orientation = p.getQuaternionFromEuler([0, 0, np.pi/4])
 
 jointPositions_start = p.calculateInverseKinematics(
     boxId,
     eefLinkIdx,
-    starting_position
+    starting_position,
+    starting_orientation
 )
 print(jointPositions_start)
 
